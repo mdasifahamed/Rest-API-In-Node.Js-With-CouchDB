@@ -75,6 +75,27 @@ app.get('/api/doc/:id',async(req,res)=>{
 })
 
 
+// get image from the db using piping 
+
+app.get('/api/media/view/:id',async(req,res)=>{
+    await db.get(req.params.id,(err,data)=>{
+        if(err){
+            res.setHeader('Content-Type','application/json')
+            res.send({status:"failed",info:"Invalid Id"})
+        }else{
+            // Data is Is The Whole Doc 
+            // attachments is the array of files objects the f
+            let attachmentName = Object.keys(data._attachments)[0] // dethc firts filrs file object name
+            let attachmentObject = data._attachments[attachmentName] // get the file object to get the fill type info
+            res.setHeader('Content-Type',attachmentObject.content_type) // set the header as per the file type
+            db.attachment.getAsStream(req.params.id,attachmentName).pipe(res) // stream line the file to the user
+        }
+    })
+
+    
+})
+
+
 
 app.listen(5000, ()=>{
     console.log("Server Started")
