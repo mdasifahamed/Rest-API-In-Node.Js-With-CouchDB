@@ -31,18 +31,11 @@ app.post("/api/create/", async(req,res)=>{
     } else {
 
         let id = req.body.id; // Id For Counch DB  Unique Id
-        let name = req.body.name;
-        let description = req.body.description;
         let file = req.files.image // extracting the tih the use "express-fileupload"
 
-        // Doc for CouchDb Doccument
-        let doc = {
-            name:name,
-            description:description
-        }
-
-        await db.multipart.insert(doc,[{name:file.name,data:file.data,content_type:file.mimetype}]
-        ,id,(err)=>{
+        await db.multipart.insert({name:req.body.name,description:req.body.description,image_url:`http://127.0.0.1:5000/api/media/view/${id}`},
+            [{name:file.name,data:file.data,content_type:file.mimetype}],
+            id,(err)=>{
 
             if(err){
                 // If Any Error From DB Side
@@ -56,13 +49,29 @@ app.post("/api/create/", async(req,res)=>{
 
                 result.status = true
                 result.info = "Successfully Uploaded"
-                result.live_url = `127.0.0.1:5000/api/get/${id}`
+                result.live_url = `http://127.0.0.1:5000/api/doc/${id}`
                 res.setHeader('Content-Type', 'application/json')
                 res.send(result)
             }
         });
     }
-     
+})
+
+// Get Doc Info By The Doc Id 
+
+app.get('/api/doc/:id',async(req,res)=>{
+   
+    await db.get(req.params.id,(err,data)=>{
+        if(err){
+            res.setHeader('Content-Type','application/json')
+            res.send({status:"failed",info:"Invalid Id"})
+        }
+        else{
+            res.setHeader('Content-Type','application/json')
+            res.send(data)
+        }
+    })
+
 })
 
 
