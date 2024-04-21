@@ -49,7 +49,7 @@ app.post("/api/create/", async(req,res)=>{
 
                 result.status = true
                 result.info = "Successfully Uploaded"
-                result.live_url = `http://127.0.0.1:5000/api/doc/${id}`
+                result.live_url = `http://127.0.0.1:5000/api/doc/single/${id}`
                 res.setHeader('Content-Type', 'application/json')
                 res.send(result)
             }
@@ -59,7 +59,7 @@ app.post("/api/create/", async(req,res)=>{
 
 // Get Doc Info By The Doc Id 
 
-app.get('/api/doc/:id',async(req,res)=>{
+app.get('/api/doc/single/:id',async(req,res)=>{
    
     await db.get(req.params.id,(err,data)=>{
         if(err){
@@ -90,6 +90,20 @@ app.get('/api/media/view/:id',async(req,res)=>{
             res.setHeader('Content-Type',attachmentObject.content_type) // set the header as per the file type
             db.attachment.getAsStream(req.params.id,attachmentName).pipe(res) // stream line the file to the user
         }
+    })
+})
+
+app.get('/api/doc/list',async(req,res)=>{
+    //{include_docs: true} to return the the docs otherwise 
+    // only id,key, and _rev will be returned
+    await db.list({include_docs: true}).then((body)=>{
+        res.setHeader('Content-Type','application/json')
+        // body returns the Whole db body
+        // rows contains all the docs 
+        res.send({data: body.rows, status:"okay"}) //
+    }).catch((err)=>{
+        res.setHeader('Content-Type','application/json')
+        res.send({data: "DB Error",status:"failed"})
     })
 
     
