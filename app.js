@@ -109,6 +109,42 @@ app.get('/api/doc/list',async(req,res)=>{
     
 })
 
+// Api Update Docs 
+
+app.put('/api/doc/single/update/:id', async(req,res)=>{
+
+    await db.get(req.params.id,async (err, data)=>{
+        if(err){
+            res.setHeader('Content-Type','application/json')
+            res.send({data: "DB Error",status:"Invalid Id"})
+        }
+        else{
+            // Note: We Need Pass Alll Associated Filed With The Doc Other Wise It Will
+            // It Will Only Kep The Given Filed And Deletes The All The Fields
+            await db.insert({
+                _id:req.params.id,
+                _rev:data._rev, 
+                name: req.body.name,
+                description:req.body.description,
+                image_url:data.image_url,
+                _attachments:data._attachments},(err)=>{
+
+                    if(err){
+                        
+                        res.setHeader('Content-Type','application/json')
+                        res.send({data: "DB Error",status:"Failed To Update"})
+                    }
+                    else{
+
+                        res.setHeader('Content-Type','application/json')
+                        res.send({data: "Updated",status:"Okay",live_url: `http://127.0.0.1:5000/api/doc/single/${req.params.id}`})
+                    }
+                });
+            
+        }
+    })
+})
+
 
 
 app.listen(5000, ()=>{
