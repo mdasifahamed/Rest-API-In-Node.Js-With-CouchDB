@@ -4,7 +4,7 @@ const dbpass= process.env.DBPASS
 const express = require('express')
 const bodyParser =  require('body-parser')
 const fileUploader = require('express-fileupload')
-const nano = require('nano')(`http://${dbuser}:${dbpass}@couchdb:5984`)
+const nano = require('nano')(`http://${dbuser}:${dbpass}@couchdb:5984`) // To run the app in the locally cahnge the `cocuhdb` to `localhost` 
 const app = express()
 const db = nano.use('resapi')
 app.use(express.static('upload'))
