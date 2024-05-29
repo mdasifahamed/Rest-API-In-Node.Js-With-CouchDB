@@ -50,7 +50,7 @@ This service is tailored for private blockchains like `Hyperledger-Fabric`. Whil
 
 ## Contrubution And Recomendations
 
-Any Kind Contribution And Recomendation That Enriches The Dapp Are Welcomed.
+Any Kind Contribution And Recomendation That Enriches The Service Are Welcomed.
 
 
 
