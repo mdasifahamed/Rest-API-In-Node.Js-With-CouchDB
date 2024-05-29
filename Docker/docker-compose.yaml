@@ -11,9 +11,12 @@ services:
 
     volumes: 
       - couchdb_for_node_app:/opt/couchdb/data
+
+    networks:
+      - app_to_db
   
   node-app:
-    image: mdasifahamed/node-couchdb-api:3.0
+    image: node-couch-db:3.0
     depends_on: 
       - couchdb
     ports:
