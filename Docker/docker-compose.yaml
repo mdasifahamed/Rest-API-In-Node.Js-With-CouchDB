@@ -1,0 +1,31 @@
+services:
+  couchdb:
+    image: couchdb_for_node:2.0
+
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=admin
+
+    ports:
+      - "5984:5984"
+
+    volumes: 
+      - couchdb_for_node_app:/opt/couchdb/data
+  
+  node-app:
+    image: mdasifahamed/node-couchdb-api:3.0
+    depends_on: 
+      - couchdb
+    ports:
+      - "8080:5000"
+
+    networks:
+      - app_to_db
+
+volumes:
+  couchdb_for_node_app:
+    external: true
+
+networks:
+  app_to_db:
+    
